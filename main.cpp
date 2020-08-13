@@ -4,37 +4,45 @@
 #include<iostream>
 #include<math.h>
 #include<ctime>
+#include<sys/time.h>
+
+
 using namespace std;
-float canvasWidth=30;
-float canvasHeight=25;
+double canvasWidth=30;
+double canvasHeight=25;
 //game related variables
 boolean gameRunning=true;
 boolean cannonFired=false;
-long cannonFiringTime=0;
-float v0=15;
-float T=0;
-float R=0;
-float PI=3.1416;
-float g=9.8;
-
+double cannonFiringTime=0;
+double gameTime=0;
 //canon related variables
-float canonAngle=15;
+double canonAngle=15;
+
+double v0=15;
+double T=0;
+double R=0;
+double PI=3.1416;
+double g=9.8;
+double t=0;
+double vx=v0*cos( (canonAngle*PI)/180 );
+double vy=v0*sin( (canonAngle*PI)/180 );
+
 //basket related variables
-float basketX=15;
-float basketY=-15;
+double basketX=15;
+double basketY=-15;
 //chicken wing related variables
 boolean wingWillRise=true;
-float chickenWingAngle=0;
+double chickenWingAngle=0;
 
 //chicken leg rotation related variables
-float chickenLegAngle=0;
-float Sx=0;
-float Sy=0;
+double chickenLegAngle=0;
+double Sx=0;
+double Sy=0;
 //chicken flight related variables
 boolean chickenWillRise=true;
-float chickenHeight=0;
+double chickenHeight=0;
 //egg related variables
-float eggAngle=0;
+double eggAngle=0;
 
 
 void init(){
@@ -45,43 +53,52 @@ void init(){
 void myKeyBoardFunction(unsigned char button,int x,int y){
     switch(button){
         case 'a':
-            Sx-=02;
+            //Sx-=02;
             canonAngle+=5;
             if(canonAngle>90){
                 canonAngle=90;
             }
             eggAngle=canonAngle;
+            vx=v0*cos( (canonAngle*PI)/180 );
+            vy=v0*sin( (canonAngle*PI)/180 );
             glutPostRedisplay();
         break;
         case 'd':
-            Sx+=02;
+           // Sx+=02;
             canonAngle-=5;
             if(canonAngle<15){
                 canonAngle=15;
             }
             eggAngle=canonAngle;
+            vx=v0*cos( (canonAngle*PI)/180 );
+            vy=v0*sin( (canonAngle*PI)/180 );
             glutPostRedisplay();
         break;
         case 's':
-                Sy-=2;
+                //Sy-=2;
                 v0=v0-0.2;
                 if(v0<=15){
                     v0=15;
                 }
+                vx=v0*cos( (canonAngle*PI)/180 );
+                vy=v0*sin( (canonAngle*PI)/180 );
         break;
         case 'w':
-                Sy+=2;
+               // Sy+=2;
                 v0=v0+0.2;
                 if(v0>=30){
                     v0=30;
                 }
+                vx=v0*cos( (canonAngle*PI)/180 );
+                vy=v0*sin( (canonAngle*PI)/180 );
         break;
         case 32://space
                 {
                 cannonFired=true;
-                time_t cannonFiringTimeVar=time(NULL);
-                cannonFiringTime=(long)cannonFiringTimeVar;
-                Sx=R;
+//                time_t cannonFiringTimeVar=time(NULL);
+//                cannonFiringTime=(long)cannonFiringTimeVar;
+//                Sx=R;
+                gameTime=0;
                 glutPostRedisplay();
                 }
         break;
@@ -289,7 +306,7 @@ void drawCannonBase(){
 
 void drawEggBasket(){
     glPushMatrix();
-    glTranslatef(basketX+7,basketY+4,0);
+    glTranslatef(basketX+7,basketY-1,0);
     glScalef(3.3 ,1.3,1.3);
     glBegin(GL_QUADS);
     glColor3f(0.5,0.5,0);glVertex3f(-1.25,0,0);
@@ -722,19 +739,31 @@ void myDisplay(){
     //*********************************CONTROLLING CODE STARTS**************************************//
     if(gameRunning){
         //Technical and Physics code starts
-        time_t currentTime;
-        currentTime=time(0);
-        long timeValue=(long)currentTime;
+        gameTime+=0.05;
         if(cannonFired){
-            timeValue=(long)currentTime;
-            timeValue-=cannonFiringTime;
+
+            Sx=vx*gameTime;
+            Sy=vy*gameTime-0.5*g*pow(gameTime,2);
+            if(Sy<=-5){
+                Sy=-5;
+                gameRunning=false;
+            }
+
         }
         T= (2*v0*sin( (PI*canonAngle)/180 ) )/g;
         R= ((v0*v0)*sin( (2*PI*canonAngle)/180 ))/g;
-
+        system("CLS");
         cout << " ******************************************\n";
-        cout << "t   :"<<timeValue << " seconds \n";
+        cout << "gametime   :"<<gameTime << " seconds \n";
+        cout << "fire time   :"<<cannonFiringTime << " seconds \n";
+
         cout << "v0   :"<<v0 << " ms-1 \n";
+        cout << "theta   :"<<canonAngle << " degree \n";
+        cout << "vx   :"<<vx << " ms-1 \n";
+        cout << "vy   :"<<vy << " ms-1 \n";
+        cout << "Sx   :"<<Sx << " ms-1 \n";
+        cout << "Sy   :"<<Sy << " ms-1 \n";
+        cout << "Chicken Height   :"<<chickenHeight << "m  \n";
         cout <<"Time of Flight: "<< T << " seconds \n";
         cout <<"Range : "<< R << " meters \n";
         cout << " ******************************************\n";

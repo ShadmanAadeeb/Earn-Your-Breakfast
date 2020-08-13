@@ -1,11 +1,12 @@
 # depslib dependency file v1.0
-1597322960 source:f:\graphics projects\earnyourbreakfast\earn your breakfast\main.cpp
+1597330825 source:f:\graphics projects\earnyourbreakfast\earn your breakfast\main.cpp
 	<windows.h>
 	<GL/glut.h>
 	<stdlib.h>
 	<iostream>
 	<math.h>
 	<ctime>
+	<sys/time.h>
 
 1592277476 c:\program files (x86)\codeblocks\mingw\include\gl\glut.h
 	<windows.h>
@@ -223,5 +224,15 @@
 	<GL/gl.h>
 
 1341010374 c:\program files (x86)\codeblocks\mingw\include\math.h
+	<_mingw.h>
+
+1341010380 c:\program files (x86)\codeblocks\mingw\include\sys\time.h
+	<time.h>
+
+1341010376 c:\program files (x86)\codeblocks\mingw\include\time.h
+	<_mingw.h>
+	<stddef.h>
+
+1341010370 c:\program files (x86)\codeblocks\mingw\include\conio.h
 	<_mingw.h>
 
